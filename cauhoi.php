@@ -24,11 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $update_cauhoi = $cauhois->update_cauhoi($_POST);
         }
     }
-    if (isset($_POST['submit_edit'])) {
-        if (isset($_POST['edit_id'])) {
-            $update_cauhoi = $cauhois->update_dapan($_POST);
-        }
-    }
+    
     
 }
 
@@ -198,27 +194,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </div>
 
-<!-- <div class="modal fade" id="edit_dapan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Sửa Đáp Án</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="cauhoi.php" method="post" class="m-b-30" id="editForm">
-                        <input type="hidden" name="edit_id" id="editdapan" value="">
-                        <div class="row justify-content-center" id="dapan"></div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-            </div>
-        </div>
-    </div>
-</div> -->
 
 
 <!-- Modal sửa câu hỏi  -->
@@ -238,6 +213,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 </div>
+<!-- da -->
+<div id="edit_dapan" class="modal" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h4 class="modal-title">Sửa đáp án</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form action="classes/dapans.php" method="post" class="m-b-30" id="editForm">
+                    <input type="hidden" name="edit_id" id="editdapanId" value="">
+                    <div class="row justify-content-center" id="dapan">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div id="delete_cauhoi" class="modal" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
@@ -283,26 +277,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     });
 
-    $(document).ready(function() {
-    $(document).on('click', '.edit-dapan', function() {
-        const idValue = $(this).data('id');
-        $.ajax({
-            url: 'classes/ajax.php',
-            method: 'POST',
-            data: { id_dapan: idValue },
-            success: function(response) {
-                $('#edit_dapan .modal-body').html(response);
-                $('#edit_dapan').modal('show');
-            },
-            error: function(xhr, status, error) {
-                console.error("Lỗi: " + error);
-            }
-        });
+    document.body.addEventListener('click', function(event) {
+        if (event.target.classList.contains('edit-dapan')) {
+            const idValue = event.target.getAttribute('data-id');
+            document.getElementById('editdapanId').value = idValue;
+            $.ajax({
+                url: 'classes/ajax.php',
+                method: 'POST',
+                data: { id_dapan: idValue },
+                success: function(response) {
+                    $('#dapan').html(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Lỗi: " + error);
+                }
+            });
+        }
     });
-});
 
-
-
-
+    document.body.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-cauhoi')) {
+            const idValue = event.target.getAttribute('data-id');
+            document.getElementById('deletecauhoiId').value = idValue;
+        }
+    });
 </script>
 <?php include 'includes/footer.php'; ?>

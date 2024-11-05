@@ -68,10 +68,6 @@ class cauhoi {
         $query = "SELECT * FROM theloai";
         return $this->db->select($query);
     }
-    // public function get_dapan($idch) {
-    //     $query = "SELECT * FROM dapans WHERE idch = '$idch'";
-    //     return $this->db->select($query);
-    // }
     public function update_cauhoi($data) {
         // Lấy và làm sạch các giá trị từ dữ liệu đầu vào
         $maCH = mysqli_real_escape_string($this->db->link, $data['maCH']);
@@ -98,30 +94,4 @@ class cauhoi {
             return false;
         }
     }
-    // public function update_dapan($data) {
-    //     // Lấy và làm sạch các giá trị từ dữ liệu đầu vào
-    //     $noidung = mysqli_real_escape_string($this->db->link, $data['noidung']);
-    //     $dung = mysqli_real_escape_string($this->db->link, $data['dung']); // Loại câu hỏi
-    
-    //     // Kiểm tra xem các trường có bị bỏ trống hay không
-    //     if (empty($noidung) || empty($dung)) {
-    //         $_SESSION['error'] = "Không được để trống";
-    //         return false;
-    //     }
-    
-    //     // Câu lệnh cập nhật
-    //     $query = "UPDATE dapans SET noidung = '$noidung', dung = '$dung'";
-    //     $result = $this->db->update($query);
-    
-    //     // Kiểm tra kết quả cập nhật
-    //     if ($result) {
-    //         $_SESSION['alert'] = 'Cập nhật thành công';
-    //         return true;
-    //     } else {
-    //         $_SESSION['error'] = 'Cập nhật thất bại';
-    //         return false;
-    //     }
-    // }
-
-    
 }    

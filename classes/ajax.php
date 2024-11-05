@@ -95,7 +95,7 @@ if (isset($_POST['id_monhoc'])) {
     }
   }
 }
-//cauhoi
+// cauhoi
 if (isset($_POST['id_cauhoi'])) {
   $id_cauhoi = $_POST['id_cauhoi'];
   $select = "SELECT cauhoi.maCH, cauhoi.noidung, cauhoi.loaiCauHoi, cauhoi.maTL, theloai.tenTL
@@ -124,7 +124,6 @@ if (isset($_POST['id_cauhoi'])) {
                   <select class="form-control" name="maTL" id="editmaTL" required>
                       <option value="<?= $row['maTL'] ?>"> <?= $row['tenTL'] ?></option>
                       <?php
-                      // Lấy danh sách thể loại để hiển thị
                       $selectTL = "SELECT * FROM theloai";
                       $resultTL = $db->select($selectTL);
                       if ($resultTL && $resultTL->num_rows > 0) {
@@ -160,38 +159,93 @@ if (isset($_POST['id_cauhoi'])) {
   }
   
 }
-// Đáp án
-// if (isset($_POST['id_dapan'])) {
-//   $id_dapan = $_POST['id_dapan'];
-//   $select = "SELECT * FROM dapans WHERE idch = '$id_dapan'";
-//   $result = $db->select($select);
-  
-//   if ($result && $result->num_rows > 0) {
-//       while ($row = $result->fetch_assoc()) {
-// ?>
-//           <div class="col-sm-8">
-//               <div class="form-group form-focus">
-//                   <input name="idch" type="text" class="form-control floating" value="<?= $row['idch'] ?>" readonly>
-//                   <label class="focus-label">ID Câu hỏi</label>
-//               </div>
-//           </div>
-//           <div class="col-sm-8">
-//               <div class="form-group form-focus">
-//                   <input name="noidung" type="text" class="form-control floating" value="<?= $row['noidung'] ?>" required>
-//                   <label class="focus-label">Nội dung Đáp án <span class="text-danger">*</span></label>
-//               </div>
-//           </div>
-//           <div class="col-sm-8">
-//               <div class="m-t-20 text-center">
-//                   <button class="btn btn-primary btn-lg" type="submit" name="submit_edit">Sửa Đáp Án</button>
-//               </div>
-//           </div>
-// <?php
-//       }
-//   } else {
-//       echo "<p class='text-danger'>Không tìm thấy đáp án.</p>";
-//   }
-// }
-// ?>
+// DA
+if (isset($_POST['submit_edit'])) {
+  $dapans = new Dapans();
+  $result = $dapans->update_dapan($_POST); // Gọi phương thức update_dapan và truyền dữ liệu $_POST
 
+  if ($result) {
+      echo "Cập nhật đáp án thành công!";
+  } else {
+      echo "Có lỗi xảy ra khi cập nhật đáp án!";
+  }
+}
+ 
+if (isset($_POST['id_dapan'])) {
+  $id_dapan = $_POST['id_dapan'];
+  $select = "SELECT dapans.maDA, dapans.idCH, dapans.noidung, cauhoi.maCH, cauhoi.idCH AS idCauHoi
+              FROM dapans 
+              JOIN cauhoi ON dapans.idCH = cauhoi.idCH 
+              WHERE dapans.idCH = '$id_dapan'";
+  $result = $db->select($select);
+
+  // Khởi tạo biến để lưu trữ đáp án
+  $answers = [];
+  $maCH = ''; // Khởi tạo biến cho mã câu hỏi
+  $idCH = ''; // Khởi tạo biến cho id câu hỏi
+
+  if ($result && $result->num_rows > 0) {
+      // Lấy tất cả đáp án vào mảng
+      while ($row = $result->fetch_assoc()) {
+          $answers[] = $row; // Thêm mỗi đáp án vào mảng
+          $maCH = $row['maCH']; // Lấy ID câu hỏi từ đáp án đầu tiên
+          $idCH = $row['idCauHoi']; // Lưu idCH từ hàng đầu tiên
+      }
+  }
+
+  // Nếu không có đáp án, vẫn lấy idCH từ câu hỏi
+  if (empty($maCH)) {
+      // Truy vấn để lấy idCH nếu không có đáp án
+      $selectCH = "SELECT idCH, maCH FROM cauhoi WHERE idCH = '$id_dapan'";
+      $resultCH = $db->select($selectCH);
+      if ($resultCH && $resultCH->num_rows > 0) {
+          $rowCH = $resultCH->fetch_assoc();
+          $maCH = $rowCH['maCH'];
+          $idCH = $rowCH['idCH'];
+      }
+  }
+  ?>
+
+  <div class="col-sm-8">
+      <div class="form-group form-focus">
+          <input name="maCH" type="text" class="form-control floating" value="<?= $maCH ?>" readonly>
+          <label class="focus-label">Mã Câu hỏi</label>
+      </div>
+  </div>
+
+  <?php 
+  // Hiển thị tối đa 4 ô textbox cho đáp án
+  $answerLabels = ['A', 'B', 'C', 'D'];
+  for ($index = 0; $index < 4; $index++) {
+      if (isset($answers[$index])) {
+          $noidung = $answers[$index]['noidung']; // Nếu có đáp án, lấy nội dung
+          $maDA = $answers[$index]['maDA']; // ID đáp án
+      } else {
+          $noidung = ''; // Nếu không có đáp án, để trống
+          $maDA = ''; // Nếu không có đáp án, để trống
+      }
+      ?>
+
+      <div class="col-sm-8">
+          <div class="form-group form-focus">
+              <input name="noidung[]" type="text" class="form-control floating" value="<?= $noidung ?>" required>
+              <label class="focus-label">Đáp án <?= $answerLabels[$index] ?> <span class="text-danger">*</span></label>
+          </div>
+      </div>
+
+      <input type="hidden" name="maDA[]" value="<?= $maDA ?>"> <!-- ID Đáp án -->
+
+      <?php 
+  }
+  ?>
+
+  <div class="col-sm-8">
+      <div class="m-t-20 text-center">
+          <button class="btn btn-primary btn-lg" type="submit" name="submit_edit">Sửa Đáp Án</button>
+      </div>
+  </div>
+
+  
+  <?php
+}
 ?>

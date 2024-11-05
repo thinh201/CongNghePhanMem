@@ -47,17 +47,6 @@ $page = basename($_SERVER['SCRIPT_NAME']);
             <img src="assets/img/sidebar/icon-4.png" alt="icon"> <span>Môn Học</span> <span class="menu-arrow"></span>
           </a>
         </li>
-
-        <!-- <li class="submenu <?= $page == 'khoa.php' ? '' : '' ?>">
-          <a href="#">
-            <img src="assets/img/sidebar/icon-4.png" alt="icon"> <span> Khoa chuyên môn</span> <span class="menu-arrow"></span>
-          </a>
-          <ul class="list-unstyled" style="display: none;">
-            <li><a href="khoa.php" class="<?= $page == 'khoa.php' ? '' : '' ?>"><span>Khoa</span></a></li>
-            <li><a href="lop.php" class="<?= $page == 'lop.php' ? '' : '' ?>"><span>Lớp</span></a></li>
-          </ul>
-        </li> -->
-
         <li class=" <?= $page == 'account.php' ? '' : '' ?>">
           <a href="account.php">
             <img src="assets/img/sidebar/icon-4.png" alt="icon"> <span> Tài khoản</span>
@@ -66,6 +55,15 @@ $page = basename($_SERVER['SCRIPT_NAME']);
         <li class=" <?= $page == 'cauhoi.php' ? '' : '' ?>">
           <a href="cauhoi.php">
             <img src="assets/img/sidebar/icon-4.png" alt="icon"> <span> Câu hỏi</span>
+          </a>
+        </li>
+        <li class=" <?= $page == '#' ? '' : '' ?>">
+          <a href="#">
+            <img src="assets/img/sidebar/icon-4.png" alt="icon"> <span>Quản lý Thi</span>
+          </a>
+        </li><li class=" <?= $page == '#' ? '' : '' ?>">
+          <a href="#">
+            <img src="assets/img/sidebar/icon-4.png" alt="icon"> <span> Thống kê điểm</span>
           </a>
         </li>
       </ul>
